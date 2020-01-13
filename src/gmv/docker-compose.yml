@@ -1,6 +1,7 @@
 version: '2' # composeファイルのバーション指定
 services:
   app: # service名
+    container_name: app
     build: . # ビルドに使用するDockerfileがあるディレクトリ指定
     tty: true # コンテナの起動永続化
     volumes:
