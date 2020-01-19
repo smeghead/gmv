@@ -1,3 +1,5 @@
+github.com/mattn/go-zglob v0.0.1 h1:xsEx/XUoVlI6yXjqBK062zYhRTZltCNmYPx6v+8DNaY=
+github.com/mattn/go-zglob v0.0.1/go.mod h1:9fxibJccNxU2cnpIKLRRFA7zX7qhkJIQWBb449FYHOo=
 github.com/saracen/walker v0.0.0-20191020095038-4d832ad28155 h1:6cXEis177J1IafLIpOHbPmn8di/6nBECKDUc+Ulfo/Q=
 github.com/saracen/walker v0.0.0-20191020095038-4d832ad28155/go.mod h1:VYm6MDHqbAnTSqTpGgLKPoDhJrUXtknAIO6qQAiFwN4=
 github.com/spiegel-im-spiegel/errs v0.3.2 h1:D4jUouZHBto4Vg+kxc0QNChf3aMynM3FDMNPAq64i2U=
