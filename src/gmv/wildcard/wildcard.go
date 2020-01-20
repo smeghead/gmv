@@ -127,7 +127,6 @@ func referenceNumbering(options option.Option, elements []PathElement) []PathEle
 		}
 		newElements = append(newElements, e)
 	}
-	fmt.Println(newElements)
 	return newElements
 }
 func Parse(options option.Option, src string) ([]PathElement, error) {
@@ -269,10 +268,8 @@ func GetDestPath(options option.Option, elements []PathElement, realPath, dest s
 		}
 		resultElements = append(resultElements, e)
 	}
-	fmt.Println(resultElements)
 
 	// dest を生成する。
-	fmt.Println(realPath)
 	if !*options.Opt_W {
 		//dest の * ** ? を参照の$i に変換する。
 	}

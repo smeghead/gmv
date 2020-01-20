@@ -1,4 +1,4 @@
-package gmv
+package main
 
 import (
 	"strings"
