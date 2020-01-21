@@ -54,7 +54,6 @@ func Diff(expected, actual interface{}) bool {
 func Test_parse_no_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	fmt.Println(options)
 	options = setOptions(options, "")
 	ret, err := Parse(options, "testdata/(case1/(*).c)")
 	if err != nil {
@@ -74,7 +73,7 @@ func Test_parse_no_match(t *testing.T) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
 }
-func Test_parse_simple_match(t *testing.T) {
+func Test_Parse_simple_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
 	options = setOptions(options, "")
@@ -93,7 +92,7 @@ func Test_parse_simple_match(t *testing.T) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
 }
-func Test_parse_w_match(t *testing.T) {
+func Test_Parse_w_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
 	options = setOptions(options, "w")
@@ -108,6 +107,61 @@ func Test_parse_w_match(t *testing.T) {
 	if len(actual) != len(expected) {
 		t.Errorf("\ngot : %v\nwant: %v", len(actual), len(expected))
 	}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_parse_GetSearchPath(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = setOptions(options, "w")
+	elements := []PathElement{
+		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
+		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
+	}
+	actual := GetSearchPath(elements)
+
+	expected := "testdata/case1/*"
+	if len(actual) != len(expected) {
+		t.Errorf("\ngot : %v\nwant: %v", len(actual), len(expected))
+	}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+
+func Test_GetDestPath(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = setOptions(options, "")
+	elements := []PathElement{
+		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
+		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
+	}
+	actual, err := GetDestPath(options, elements, "testdata/case1/01.txt", "testdata/case1/$1.x")
+	if err != nil {
+		t.Errorf("error: %v\n", err)
+	}
+
+	expected := "testdata/case1/01.txt.x"
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_GetDestPath_W(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = setOptions(options, "w")
+	elements := []PathElement{
+		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
+		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
+	}
+	actual, err := GetDestPath(options, elements, "testdata/case1/01.txt", "testdata/case1/*.x")
+	if err != nil {
+		t.Errorf("error: %v\n", err)
+	}
+
+	expected := "testdata/case1/01.txt.x"
 	if Diff(expected, actual) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}

@@ -182,12 +182,7 @@ func Parse(options option.Option, src string) ([]PathElement, error) {
 func GetSearchPath(elements []PathElement) string {
 	path := ""
 	for _, e := range elements {
-		switch e.charType {
-		case ReferenceBegin, ReferenceEnd:
-			break
-		default:
-			path += e.content
-		}
+		path += e.content
 	}
 	return path
 }
@@ -272,10 +267,17 @@ func GetDestPath(options option.Option, elements []PathElement, realPath, dest s
 	// dest を生成する。
 	if !*options.Opt_W {
 		//dest の * ** ? を参照の$i に変換する。
+		re := regexp.MustCompile(`(\*\**|\?|\[[^\]]\])`)
+		n := 0
+		callback := func(x string)string{
+			n += 1
+			return fmt.Sprintf("$%d", n)
+		}
+		dest = re.ReplaceAllStringFunc(dest, callback)
 	}
 	references := findReferences(resultElements)
 	for k, v := range references {
-		re := regexp.MustCompile(fmt.Sprintf("\\$%d", k))
+		re := regexp.MustCompile(fmt.Sprintf(`\$%d`, k))
 		dest = re.ReplaceAllLiteralString(dest, v)
 	}
 
