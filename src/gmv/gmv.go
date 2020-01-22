@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"os/exec"
 	"flag"
 	"fmt"
 	"github.com/mattn/go-zglob"
@@ -63,7 +64,13 @@ func executeCommands(options option.Option, params []Param) {
 		fmt.Fprintf(os.Stderr, "ERROR: %+v.\n", err)
 		return
 	}
-	//TODO ファイル移動は実行していない。
+	//ファイル移動
+	for _, p := range params {
+		if err := exec.Command("mv", "--", p.Src, p.Dest).Run(); err != nil {
+			fmt.Fprintf(os.Stderr, "%+v\n", err)
+			return
+		}
+	}
 }
 func main() {
 	options := option.NewOption()
