@@ -151,7 +151,7 @@ func Test_GetDestPath(t *testing.T) {
 func Test_GetDestPath_W(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "w")
+	options = setOptions(options, "W")
 	elements := []PathElement{
 		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
 		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},

@@ -20,10 +20,9 @@ func checkOverride(params []Param) error {
 		paths[p.Src] += 1
 		paths[p.Dest] += 1
 	}
-	fmt.Println("checkOverride", paths)
 	for path, count := range paths {
 		if count > 1 {
-			return fmt.Errorf("duplicate paths %s.", path)
+			return fmt.Errorf("duplicate paths. [%s]", path)
 		}
 	}
 	return nil
@@ -52,6 +51,20 @@ func parse(options option.Option, src, dest string) ([]Param, error) {
 	}
 	return params, nil
 }
+func executeCommands(options option.Option, params []Param) {
+	if *options.Opt_n {
+		for _, p := range params {
+			fmt.Printf("%s -- '%s' '%s'\n", "mv", p.Src, p.Dest)
+		}
+		return
+	}
+
+	if err := checkOverride(params); err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: %+v.\n", err)
+		return
+	}
+	//TODO ファイル移動は実行していない。
+}
 func main() {
 	options := option.NewOption()
 	flag.Parse()
@@ -65,12 +78,5 @@ func main() {
 		return
 	}
 	
-	if err := checkOverride(params); err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %+v.\n", err)
-		return
-	}
-	//TODO 仮に表示のみを行なう。ファイル移動は実行していない。
-	for _, p := range params {
-		fmt.Printf("%s -- '%s' '%s'\n", "mv", p.Src, p.Dest)
-	}
+	executeCommands(options, params)
 }

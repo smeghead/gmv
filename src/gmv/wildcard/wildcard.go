@@ -265,7 +265,7 @@ func GetDestPath(options option.Option, elements []PathElement, realPath, dest s
 	}
 
 	// dest を生成する。
-	if !*options.Opt_W {
+	if *options.Opt_W {
 		//dest の * ** ? を参照の$i に変換する。
 		re := regexp.MustCompile(`(\*\**|\?|\[[^\]]\])`)
 		n := 0
