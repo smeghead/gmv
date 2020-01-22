@@ -154,19 +154,20 @@ func Parse(options option.Option, src string) ([]PathElement, error) {
 			if len(chars) > 1 {
 				for _, next := range chars[1:] {
 					if next.charType != c.charType {
-						elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: referenceLevels})
+						// append([]int{}, referenceLevels...) は、cloneしている。cloneしないと最終的に同じ値になってしまうため。
+						elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: append([]int{}, referenceLevels...)})
 						break CharSwich
 					}
 					//次の要素も同じcharTypeなら続けて取得する。
 					buf += next.char
 				}
-				elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: referenceLevels})
+				elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: append([]int{}, referenceLevels...)})
 			} else { // len(chars) == 1
-				elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: referenceLevels})
+				elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: append([]int{}, referenceLevels...)})
 			}
 			break
 		default:
-			elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: referenceLevels})
+			elements = append(elements, PathElement{charType: c.charType, content: buf, referenceNumbers: append([]int{}, referenceLevels...)})
 		}
 		chars = chars[len(buf):]
 	}

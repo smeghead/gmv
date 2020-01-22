@@ -92,6 +92,48 @@ func Test_Parse_simple_match(t *testing.T) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
 }
+func Test_Parse_complex_match1(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = setOptions(options, "")
+	actual, err := Parse(options, "testdata/case1/(*.tx)t")
+	if err != nil {
+		t.Errorf("err: %v", err)
+	}
+	expected := []PathElement{
+		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
+		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
+		{charType: Literal, content: ".tx", match: "", referenceNumbers: []int{1}},
+		{charType: Literal, content: "t", match: "", referenceNumbers: []int{}},
+	}
+	if len(actual) != len(expected) {
+		t.Errorf("\ngot : %v\nwant: %v", len(actual), len(expected))
+	}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_Parse_multi_match1(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = setOptions(options, "")
+	actual, err := Parse(options, "testdata/case1/(*).(txt)")
+	if err != nil {
+		t.Errorf("err: %v", err)
+	}
+	expected := []PathElement{
+		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
+		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
+		{charType: Literal, content: ".", match: "", referenceNumbers: []int{}},
+		{charType: Literal, content: "txt", match: "", referenceNumbers: []int{2}},
+	}
+	if len(actual) != len(expected) {
+		t.Errorf("\ngot : %v\nwant: %v", len(actual), len(expected))
+	}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
 func Test_Parse_w_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
@@ -144,6 +186,26 @@ func Test_GetDestPath(t *testing.T) {
 	}
 
 	expected := "testdata/case1/01.txt.x"
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_GetDestPath_complex1(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = setOptions(options, "")
+	elements := []PathElement{
+		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
+		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
+		{charType: Literal, content: ".tx", match: "", referenceNumbers: []int{1}},
+		{charType: Literal, content: "t", match: "", referenceNumbers: []int{}},
+	}
+	actual, err := GetDestPath(options, elements, "testdata/case1/01.txt", "testdata/case1/$1.x")
+	if err != nil {
+		t.Errorf("error: %v\n", err)
+	}
+
+	expected := "testdata/case1/01.tx.x"
 	if Diff(expected, actual) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
