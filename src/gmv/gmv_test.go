@@ -3,7 +3,6 @@ package main
 import (
 	"strings"
 	"testing"
-	"fmt"
 	"reflect"
 	"gmv/option"
 )
@@ -52,7 +51,6 @@ func setOptions(options option.Option, param string) option.Option {
 func Test_parse_no_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	fmt.Println(options)
 	options = setOptions(options, "")
 	ret, err := parse(options, "testdata/(case1/(*).c)", "testdata/case/$1.x")
 	if err != nil {
@@ -87,23 +85,25 @@ func Test_parse_simple_match(t *testing.T) {
 		t.Errorf("got: %v\nwant: %v", actual, expected)
 	}
 }
-//func Test_parse_w_match(t *testing.T) {
-//	options_p := new(option.Option)
-//	options := *options_p
-//	options = setOptions(options, "w")
-//	actual, err := parse(options, "testdata/case1/*", "testdata/case1/$1.x")
-//	if err != nil {
-//		t.Errorf("err: %v", err)
-//	}
-//	expected := []Param{
-//		{Src: "testdata/case1/01.txt", Dest: "testdata/case1/01.txt.x"},
-//		{Src: "testdata/case1/02.txt", Dest: "testdata/case1/02.txt.x"},
-//		{Src: "testdata/case1/03.txt", Dest: "testdata/case1/03.txt.x"},
-//	}
-//	if len(actual) != len(expected) {
-//		t.Errorf("got: %v\nwant: %v", len(actual), len(expected))
-//	}
-//	if reflect.DeepEqual(expected, actual) {
-//		t.Errorf("got: %v\nwant: %v", actual, expected)
-//	}
-//}
+func Test_checkOverride(t *testing.T) {
+	params := []Param{
+		{Src: "hoge1", Dest: "hoge2"},
+		{Src: "hoge3", Dest: "hoge4"},
+	}
+	actual := checkOverride(params)
+
+	if actual != nil {
+		t.Errorf("got: %v", actual)
+	}
+}
+func Test_checkOverride_duplicates(t *testing.T) {
+	params := []Param{
+		{Src: "hoge1", Dest: "hoge2"},
+		{Src: "hoge2", Dest: "hoge4"},
+	}
+	actual := checkOverride(params)
+
+	if actual == nil {
+		t.Errorf("must rase error: %v", actual)
+	}
+}

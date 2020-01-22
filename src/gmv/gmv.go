@@ -14,6 +14,20 @@ type Param struct {
 	Dest string
 }
 
+func checkOverride(params []Param) error {
+	paths := make(map[string]int)
+	for _, p := range params {
+		paths[p.Src] += 1
+		paths[p.Dest] += 1
+	}
+	fmt.Println("checkOverride", paths)
+	for path, count := range paths {
+		if count > 1 {
+			return fmt.Errorf("duplicate paths %s.", path)
+		}
+	}
+	return nil
+}
 
 
 func parse(options option.Option, src, dest string) ([]Param, error) {
@@ -46,6 +60,16 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%+v\n", err)
 		return
 	}
+	if len(params) == 0 {
+		fmt.Fprintf(os.Stderr, "ERROR: no target files\n")
+		return
+	}
+	
+	if err := checkOverride(params); err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: %+v.\n", err)
+		return
+	}
+	//TODO 仮に表示のみを行なう。ファイル移動は実行していない。
 	for _, p := range params {
 		fmt.Printf("%s -- '%s' '%s'\n", "mv", p.Src, p.Dest)
 	}
