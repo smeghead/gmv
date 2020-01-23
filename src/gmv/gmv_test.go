@@ -57,7 +57,7 @@ func Test_parse_no_match(t *testing.T) {
 		t.Errorf("err: %v", err)
 	}
 	actual := ret
-	expected := []Param{}
+	expected := []option.Param{}
 	if len(actual) != len(expected) {
 		t.Errorf("got: %v\nwant: %v", len(actual), len(expected))
 	}
@@ -73,7 +73,7 @@ func Test_parse_simple_match(t *testing.T) {
 	if err != nil {
 		t.Errorf("err: %v", err)
 	}
-	expected := []Param{
+	expected := []option.Param{
 		{Src: "testdata/case1/01.txt", Dest: "testdata/case1/01.txt.x"},
 		{Src: "testdata/case1/02.txt", Dest: "testdata/case1/02.txt.x"},
 		{Src: "testdata/case1/03.txt", Dest: "testdata/case1/03.txt.x"},
@@ -83,27 +83,5 @@ func Test_parse_simple_match(t *testing.T) {
 	}
 	if reflect.DeepEqual(expected, actual) {
 		t.Errorf("got: %v\nwant: %v", actual, expected)
-	}
-}
-func Test_checkOverride(t *testing.T) {
-	params := []Param{
-		{Src: "hoge1", Dest: "hoge2"},
-		{Src: "hoge3", Dest: "hoge4"},
-	}
-	actual := checkOverride(params)
-
-	if actual != nil {
-		t.Errorf("got: %v", actual)
-	}
-}
-func Test_checkOverride_duplicates(t *testing.T) {
-	params := []Param{
-		{Src: "hoge1", Dest: "hoge2"},
-		{Src: "hoge2", Dest: "hoge4"},
-	}
-	actual := checkOverride(params)
-
-	if actual == nil {
-		t.Errorf("must rase error: %v", actual)
 	}
 }

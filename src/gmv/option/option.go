@@ -3,6 +3,10 @@ package option
 import (
 	"flag"
 )
+type Param struct {
+	Src string
+	Dest string
+}
 
 type Option struct {
 	Opt_f *bool

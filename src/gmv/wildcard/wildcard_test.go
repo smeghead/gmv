@@ -1,13 +1,13 @@
 package wildcard
 
 import (
-	"strings"
 	"testing"
+	"strings"
 	"fmt"
 	"gmv/option"
 )
 
-func setOptions(options option.Option, param string) option.Option {
+func SetOptions(options option.Option, param string) option.Option {
 	t := true
 	f := false
 	options.Opt_W = &t
@@ -54,7 +54,7 @@ func Diff(expected, actual interface{}) bool {
 func Test_parse_no_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "")
+	options = SetOptions(options, "")
 	ret, err := Parse(options, "testdata/(case1/(*).c)")
 	if err != nil {
 		t.Errorf("err: %v", err)
@@ -76,7 +76,7 @@ func Test_parse_no_match(t *testing.T) {
 func Test_Parse_simple_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "")
+	options = SetOptions(options, "")
 	actual, err := Parse(options, "testdata/case1/(*)")
 	if err != nil {
 		t.Errorf("err: %v", err)
@@ -95,7 +95,7 @@ func Test_Parse_simple_match(t *testing.T) {
 func Test_Parse_complex_match1(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "")
+	options = SetOptions(options, "")
 	actual, err := Parse(options, "testdata/case1/(*.tx)t")
 	if err != nil {
 		t.Errorf("err: %v", err)
@@ -116,7 +116,7 @@ func Test_Parse_complex_match1(t *testing.T) {
 func Test_Parse_multi_match1(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "")
+	options = SetOptions(options, "")
 	actual, err := Parse(options, "testdata/case1/(*).(txt)")
 	if err != nil {
 		t.Errorf("err: %v", err)
@@ -137,7 +137,7 @@ func Test_Parse_multi_match1(t *testing.T) {
 func Test_Parse_w_match(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "w")
+	options = SetOptions(options, "w")
 	actual, err := Parse(options, "testdata/case1/*")
 	if err != nil {
 		t.Errorf("err: %v", err)
@@ -156,7 +156,7 @@ func Test_Parse_w_match(t *testing.T) {
 func Test_parse_GetSearchPath(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "w")
+	options = SetOptions(options, "w")
 	elements := []PathElement{
 		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
 		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
@@ -175,7 +175,7 @@ func Test_parse_GetSearchPath(t *testing.T) {
 func Test_GetDestPath(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "")
+	options = SetOptions(options, "")
 	elements := []PathElement{
 		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
 		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
@@ -193,7 +193,7 @@ func Test_GetDestPath(t *testing.T) {
 func Test_GetDestPath_complex1(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "")
+	options = SetOptions(options, "")
 	elements := []PathElement{
 		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
 		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
@@ -213,7 +213,7 @@ func Test_GetDestPath_complex1(t *testing.T) {
 func Test_GetDestPath_W(t *testing.T) {
 	options_p := new(option.Option)
 	options := *options_p
-	options = setOptions(options, "W")
+	options = SetOptions(options, "W")
 	elements := []PathElement{
 		{charType: Literal, content: "testdata/case1/", match: "", referenceNumbers: []int{}},
 		{charType: Star, content: "*", match: "", referenceNumbers: []int{1}},
