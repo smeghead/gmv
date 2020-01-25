@@ -16,19 +16,19 @@ import (
 func parse(options option.Option, src, dest string) ([]option.Param, error) {
 	elements, err := wildcard.Parse(options, src)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%+v\n", err)
+		fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
 		return nil, err
 	}
 	matches, err := zglob.Glob(wildcard.GetSearchPath(elements))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%+v\n", err)
+		fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
 		return nil, err
 	}
 	params := []option.Param{}
 	for _ , path := range matches {
 		destPath, err := wildcard.GetDestPath(options, elements, path, dest)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%+v\n", err)
+			fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
 			return nil, err
 		}
 		params = append(params, option.Param{Src: path, Dest: destPath})
@@ -47,7 +47,7 @@ func main() {
 
 	params, err := parse(options, flag.Arg(0), flag.Arg(1))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%+v\n", err)
+		fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
 		os.Exit(-1)
 		return
 	}

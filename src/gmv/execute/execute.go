@@ -25,6 +25,9 @@ func generateCommandString(options option.Option, param option.Param) []string {
 	}
 	args = append(args, program)
 	//option
+	if (*options.Opt_L && *options.Opt_s) {
+		args = append(args, "-s")
+	}
 	args = append(args, "--")
 	args = append(args, quoted(param.Src), quoted(param.Dest))
 	return args
@@ -46,7 +49,8 @@ func checkOverride(params []option.Param) error {
 func ExecuteCommands(options option.Option, params []option.Param) {
 	if *options.Opt_n {
 		for _, p := range params {
-			fmt.Printf("%s -- '%s' '%s'\n", "mv", p.Src, p.Dest)
+			command := generateCommandString(options, p)
+			fmt.Printf("%s\n", strings.Join(command, " "))
 		}
 		return
 	}
@@ -57,8 +61,9 @@ func ExecuteCommands(options option.Option, params []option.Param) {
 	}
 	//ファイル移動
 	for _, p := range params {
-		if err := exec.Command("mv", "--", p.Src, p.Dest).Run(); err != nil {
-			fmt.Fprintf(os.Stderr, "%+v\n", err)
+		command := generateCommandString(options, p)
+		if err := exec.Command(command[0], command[1:]...).Run(); err != nil {
+			fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
 			return
 		}
 	}

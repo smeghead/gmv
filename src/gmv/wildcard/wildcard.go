@@ -242,7 +242,7 @@ func GetDestPath(options option.Option, elements []PathElement, realPath, dest s
 	re := regexp.MustCompile(regexString)
 	matched := re.FindStringSubmatch(realPath)
 	if len(matched) == 0 {
-		fmt.Fprintln(os.Stderr, "regexp failed. " + regexString)
+		fmt.Fprintln(os.Stderr, "ERROR: regexp failed. " + regexString)
 		return "", fmt.Errorf("regexp failed.")
 	}
 

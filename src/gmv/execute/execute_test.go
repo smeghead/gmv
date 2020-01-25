@@ -68,6 +68,50 @@ func Test_quoted(t *testing.T) {
 		}
 	}
 }
+func Test_generateCommandString(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = SetOptions(options, "")
+
+	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
+	expected := []string{"mv", "--", "\"src\"", "\"dest\""}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_generateCommandString_cp(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = SetOptions(options, "C")
+
+	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
+	expected := []string{"cp", "--", "\"src\"", "\"dest\""}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_generateCommandString_ln(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = SetOptions(options, "L")
+
+	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
+	expected := []string{"ln", "--", "\"src\"", "\"dest\""}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
+func Test_generateCommandString_ln_s(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = SetOptions(options, "Ls")
+
+	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
+	expected := []string{"ln", "-s", "--", "\"src\"", "\"dest\""}
+	if Diff(expected, actual) {
+		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
+	}
+}
 func Test_checkOverride(t *testing.T) {
 	params := []option.Param{
 		{Src: "hoge1", Dest: "hoge2"},
