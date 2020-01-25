@@ -48,19 +48,18 @@ func main() {
 	params, err := parse(options, flag.Arg(0), flag.Arg(1))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
-		os.Exit(-1)
+		os.Exit(1)
 		return
 	}
 	if len(params) == 0 {
 		fmt.Fprintf(os.Stderr, "ERROR: no target files\n")
-		os.Exit(-1)
+		os.Exit(1)
 		return
 	}
 	
-	err = execute.ExecuteCommands(options, params)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: no target files\n")
-		os.Exit(-1)
+	if err := execute.ExecuteCommands(options, params); err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
+		os.Exit(1)
 		return
 	}
 }

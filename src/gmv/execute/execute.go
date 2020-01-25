@@ -64,9 +64,12 @@ func ExecuteCommands(options option.Option, params []option.Param) error {
 	for _, p := range params {
 		if _, err := os.Stat(p.Dest); err == nil {
 			// 移動後のファイルが存在する場合
-			return fmt.Errorf("ERROR: target file exists. %s\n", p.Dest)
+			return fmt.Errorf("target file exists. %s", p.Dest)
 		}
 		commandStrings := generateCommandString(options, p)
+		if *options.Opt_v {
+			fmt.Printf("%s\n", commandStrings)
+		}
 		command := exec.Command(commandStrings[0], commandStrings[1:]...)
 		stdout, err := command.StdoutPipe()
 		if err != nil {
