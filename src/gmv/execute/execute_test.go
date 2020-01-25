@@ -4,6 +4,8 @@ import (
 	"testing"
 	"strings"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"gmv/option"
 )
 
@@ -74,7 +76,7 @@ func Test_generateCommandString(t *testing.T) {
 	options = SetOptions(options, "")
 
 	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
-	expected := []string{"mv", "--", "\"src\"", "\"dest\""}
+	expected := []string{"mv", "--", "src", "dest"}
 	if Diff(expected, actual) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
@@ -85,7 +87,7 @@ func Test_generateCommandString_cp(t *testing.T) {
 	options = SetOptions(options, "C")
 
 	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
-	expected := []string{"cp", "--", "\"src\"", "\"dest\""}
+	expected := []string{"cp", "--", "src", "dest"}
 	if Diff(expected, actual) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
@@ -96,7 +98,7 @@ func Test_generateCommandString_ln(t *testing.T) {
 	options = SetOptions(options, "L")
 
 	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
-	expected := []string{"ln", "--", "\"src\"", "\"dest\""}
+	expected := []string{"ln", "--", "src", "dest"}
 	if Diff(expected, actual) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
@@ -107,7 +109,7 @@ func Test_generateCommandString_ln_s(t *testing.T) {
 	options = SetOptions(options, "Ls")
 
 	actual := generateCommandString(options, option.Param{Src: "src", Dest: "dest"})
-	expected := []string{"ln", "-s", "--", "\"src\"", "\"dest\""}
+	expected := []string{"ln", "-s", "--", "src", "dest"}
 	if Diff(expected, actual) {
 		t.Errorf("\ngot : %v\nwant: %v", actual, expected)
 	}
@@ -133,6 +135,65 @@ func Test_checkOverride_duplicates(t *testing.T) {
 	if actual == nil {
 		t.Errorf("must rase error: %v", actual)
 	}
+}
+func Test_ExecuteCommands(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = SetOptions(options, "")
+
+	if err := ioutil.WriteFile("../testdata/case2/hoge1", []byte(""), 0644); err != nil {
+		t.Errorf("error: %v", err)
+	}
+	params := []option.Param{
+		{Src: "../testdata/case2/hoge1", Dest: "../testdata/case2/hoge2"},
+	}
+
+
+	err := ExecuteCommands(options, params)
+	if err != nil {
+		t.Errorf("ExecuteCommands failed: %v", err)
+	}
+
+	
+	if _, err := os.Stat("../testdata/case2/hoge1"); err == nil {
+		//なくなっているはず。
+		t.Errorf("file must not exists")
+	}
+	
+	if _, err := os.Stat("../testdata/case2/hoge2"); err != nil {
+		//あるはず。
+		t.Errorf("file must exists")
+	}
+	os.Remove("../testdata/case2/hoge2")
+}
+func Test_ExecuteCommands_overwrite(t *testing.T) {
+	options_p := new(option.Option)
+	options := *options_p
+	options = SetOptions(options, "")
+
+	if err := ioutil.WriteFile("../testdata/case2/hoge1", []byte(""), 0644); err != nil {
+		t.Errorf("error: %v", err)
+	}
+	if err := ioutil.WriteFile("../testdata/case2/hoge2", []byte(""), 0644); err != nil {
+		t.Errorf("error: %v", err)
+	}
+	params := []option.Param{
+		{Src: "../testdata/case2/hoge1", Dest: "../testdata/case2/hoge2"},
+	}
+
+
+	err := ExecuteCommands(options, params)
+	if err == nil {
+		t.Errorf("ExecuteCommands overwrite must error.")
+	}
+
+	if _, err := os.Stat("../testdata/case2/hoge1"); err != nil {
+		//移動してないから存在するはず
+		t.Errorf("file must not exists")
+	}
+	
+	os.Remove("../testdata/case2/hoge1")
+	os.Remove("../testdata/case2/hoge2")
 }
 //func Test_Parse_simple_match(t *testing.T) {
 //	options_p := new(option.Option)

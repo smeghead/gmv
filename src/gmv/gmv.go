@@ -57,5 +57,10 @@ func main() {
 		return
 	}
 	
-	execute.ExecuteCommands(options, params)
+	err = execute.ExecuteCommands(options, params)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: no target files\n")
+		os.Exit(-1)
+		return
+	}
 }
