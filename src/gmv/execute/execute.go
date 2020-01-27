@@ -66,11 +66,26 @@ func ExecuteCommands(options option.Option, params []option.Param) error {
 			// 移動後のファイルが存在する場合
 			return fmt.Errorf("target file exists. %s", p.Dest)
 		}
+
 		commandStrings := generateCommandString(options, p)
-		if *options.Opt_v {
-			fmt.Printf("%s\n", commandStrings)
-		}
 		command := exec.Command(commandStrings[0], commandStrings[1:]...)
+		if *options.Opt_i || *options.Opt_v {
+			fmt.Printf("%s\n", command.String())
+		}
+		if *options.Opt_i {
+			fmt.Fprintf(os.Stderr, "Execute? (y/n)")
+			input := ""
+			if _, err := fmt.Scanf("%s", &input); err != nil {
+				return err
+			}
+			if len(input) == 0 {
+				continue
+			}
+			input = strings.ToLower(input)
+			if input[0] != 'y' {
+				continue
+			}
+		}
 		stdout, err := command.StdoutPipe()
 		if err != nil {
 			return err
